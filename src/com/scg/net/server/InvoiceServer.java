@@ -2,8 +2,12 @@ package com.scg.net.server;
 
 import com.scg.domain.ClientAccount;
 import com.scg.domain.Consultant;
+import com.scg.persistent.DbServer;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -12,7 +16,7 @@ import java.util.List;
  * Date: 2/10/13
  * Time: 11:46 AM
  */
-public class InvoiceServer {
+public class InvoiceServer implements Runnable {
     private int port;
     private List<ClientAccount> clientList;
     private List<Consultant> consultantList;
@@ -34,7 +38,6 @@ public class InvoiceServer {
      * Run this server, establishing connections, receiving commands, and sending them to the CommandProcesser.
      */
     public void run() {
-
     }
 
     /**

@@ -12,6 +12,8 @@ import com.scg.domain.ClientAccount;
 public final class AddClientCommand extends Command<ClientAccount> {
     ClientAccount target;
 
+    private static final long serialVersionUID = -698814103304610481L;
+
     /**
      * Construct an AddClientCommand with a target.
      * @param target - The target of this Command.

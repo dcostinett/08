@@ -9,6 +9,7 @@ package com.scg.net;
  * The command to disconnect, this commandhas no target.
  */
 public class DisconnectCommand extends Command<Object> {
+    private static final long serialVersionUID = 580539662031697011L;
 
     /**
      * Construct an DisconnectCommand.

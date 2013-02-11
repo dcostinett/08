@@ -65,11 +65,11 @@ public final class ListFactory {
                                      final List<Consultant> consultants,
                                      final List<TimeCard> timeCards) {
         clients.add(new ClientAccount("Acme Industries",
-                    new Name("Coyote", "Wiley"),
-                    new Address("1616 Index Ct.", "Redmond", StateCode.WA, "98055")));
+                new Name("Coyote", "Wiley"),
+                new Address("1616 Index Ct.", "Redmond", StateCode.WA, "98055")));
         clients.add(new ClientAccount("FooBar Enterprises",
-                    new Name("Sam", "Yosemite"),
-                    new Address("1024 Kilobyte Dr.", "Silicone Gulch", StateCode.CA, "94105")));
+                new Name("Sam", "Yosemite"),
+                new Address("1024 Kilobyte Dr.", "Silicone Gulch", StateCode.CA, "94105")));
 
         // Create some Consultants
         Consultant programmer = new Consultant(new Name("Coder", "Carl"));
@@ -193,6 +193,35 @@ public final class ListFactory {
         logger.log(Level.FINEST, "Created TimeCard: ",
                 timeCard.toString());
         timeCards.add(timeCard);
+    }
+
+    /**
+     * Create some time card instances.  Also, creates the consultants the
+     * time cards are for.
+     *
+     * @param clients the list to create the new clients in
+     */
+    public static void populateClientList(final List<ClientAccount> clients) {
+        clients.add(new ClientAccount("Acme Industries",
+                new Name("Coyote", "Wiley"),
+                new Address("1616 Index Ct.", "Redmond", StateCode.WA, "98055")));
+        clients.add(new ClientAccount("FooBar Enterprises",
+                new Name("Sam", "Yosemite"),
+                new Address("1024 Kilobyte Dr.", "Silicone Gulch", StateCode.CA, "94105")));
+    }
+
+    /**
+     * Create some time card instances.  Also, creates the consultants the
+     * time cards are for.
+     *
+     * @param consultants the list to return the new consultants in
+     */
+    public static void populateConsultantList(final List<Consultant> consultants) {
+        // Create some Consultants
+        Consultant programmer = new Consultant(new Name("Coder", "Carl"));
+        Consultant systemAnalyst = new Consultant(new Name("Architect", "Ann", "S."));
+        consultants.add(programmer);
+        consultants.add(systemAnalyst);
     }
 
     /**

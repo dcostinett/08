@@ -11,6 +11,7 @@ import com.scg.domain.TimeCard;
  * The command to add a Consultant to a list maintained by the server.
  */
 public final class AddTimeCardCommand extends Command<TimeCard> {
+    private static final long serialVersionUID = -1096168261168597249L;
     TimeCard target;
 
     /**

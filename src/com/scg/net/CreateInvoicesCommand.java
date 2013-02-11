@@ -13,6 +13,8 @@ import java.util.Date;
  * The command to create invoices for a specified month.
  */
 public class CreateInvoicesCommand extends Command<Date> {
+    private static final long serialVersionUID = -2115265433453491367L;
+
     Date target;
 
     /**

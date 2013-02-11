@@ -9,6 +9,7 @@ package com.scg.net;
  * This Command will cause the CommandProcessor to shutdown the server.
  */
 public class ShutdownCommand extends Command<Object> {
+    private static final long serialVersionUID = -469522035402760610L;
 
     public ShutdownCommand() {
         super(null);
