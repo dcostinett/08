@@ -2,7 +2,9 @@ package com.scg.net;
 
 import com.scg.domain.Invoice;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,7 +26,9 @@ public class CreateInvoicesCommand extends Command<Date> {
      */
     public CreateInvoicesCommand(Date target) {
         super(target);
-        target = target;
+        this.target = target;
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(target);
     }
 
     @Override
