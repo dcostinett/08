@@ -60,6 +60,7 @@ public class CommandProcessor implements Runnable {
      * @param command - the command to execute.
      */
     public void execute(AddClientCommand command) {
+        //log
         clientList.add(command.getTarget());
     }
 
@@ -68,6 +69,7 @@ public class CommandProcessor implements Runnable {
      * @param command - the command to execute.
      */
     public void execute(AddConsultantCommand command) {
+        //log
         consultantList.add(command.getTarget());
     }
 
@@ -76,7 +78,7 @@ public class CommandProcessor implements Runnable {
      * @param command - the command to execute.
      */
     public void execute(CreateInvoicesCommand command) {
-
+        //should be the same code from previous methods
     }
 
     /**

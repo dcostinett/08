@@ -20,7 +20,7 @@ public abstract class Command<T> implements Serializable {
      * Construct an AbstractCommand with a receiver; called from subclasses.
      * @param target - the target
      */
-    public Command(T target) {
+    public Command(final T target) {
         this.target = target;
     }
 
@@ -42,7 +42,7 @@ public abstract class Command<T> implements Serializable {
      * Set the CommandProcessor that will execute this Command.
      * @param receiver - the receiver for this Command.
      */
-    public final void setReceiver(CommandProcessor receiver) {
+    public final void setReceiver(final CommandProcessor receiver) {
         this.receiver = receiver;
     }
 
