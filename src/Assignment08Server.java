@@ -57,7 +57,8 @@ public class Assignment08Server {
      * @throws - if the server raises any exceptions.
      */
     public static void main(String[] args) throws Exception {
-        ServerSocket servSock = null;
+
+        InitDb.main(new String[] {});
 
         try {
             List<ClientAccount> clients = new ArrayList<ClientAccount>(); //db.getClients();
@@ -77,34 +78,12 @@ public class Assignment08Server {
             if (consultants.isEmpty()) {
                 ListFactory.populateConsultantList(consultants);
             }
-
-            servSock = new ServerSocket(DEFAULT_PORT);
             System.out.println("Server ready on port " + DEFAULT_PORT + "...");
             InvoiceServer server = new InvoiceServer(DEFAULT_PORT, clients, consultants);
 
-            while (true) {
-                Socket sock = servSock.accept(); // blocks
-
-                ObjectInputStream iStream = new ObjectInputStream(sock.getInputStream());
-                Command cmd = (Command) iStream.readObject();
-                CommandProcessor proc = new CommandProcessor(sock, clients, consultants, server);
-                cmd.setReceiver(proc);
-                cmd.execute();
-/*
-                Thread t = new Thread(proc);
-                t.start();
-*/
-            }
+            server.run();
         } catch (IOException ex) {
             System.err.println("Server error: " + ex);
-        } finally {
-            if (servSock != null) {
-                try {
-                    servSock.close();
-                } catch (IOException ioex) {
-                    System.err.println("Error closing server socket. " + ioex);
-                }
-            }
         }
 
     }

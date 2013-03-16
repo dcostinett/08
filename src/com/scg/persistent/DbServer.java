@@ -34,6 +34,40 @@ public class DbServer {
     }
 
     /**
+     * Clean the db
+     */
+    public void clean_db() throws SQLException {
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = DriverManager.getConnection(url, username, password);
+
+            stmt = conn.createStatement();
+            String sql = String.format("DELETE FROM non_billable_hours; ");
+            stmt.executeUpdate(sql);
+
+            sql = String.format("DELETE FROM billable_hours; ");
+            stmt.executeUpdate(sql);
+
+            sql = String.format("DELETE FROM timecards; ");
+            stmt.executeUpdate(sql);
+
+            sql = String.format("DELETE FROM clients; ");
+            stmt.executeUpdate(sql);
+
+            sql = String.format("DELETE FROM consultants");
+            stmt.executeUpdate(sql);
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
+
+    /**
      * Add a client to the database.
      * @param client - the client to add
      * @throws SQLException
@@ -65,7 +99,7 @@ public class DbServer {
             if (conn != null) {
                 conn.close();
             }
-    }
+        }
     }
 
     /**

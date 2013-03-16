@@ -29,6 +29,7 @@ public class InitDb {
         ListFactory.populateLists(accounts, consultants, timeCards);
 
         DbServer db = new DbServer("jdbc:mysql://localhost/scgDB", "student", "student");
+        db.clean_db();
         for (ClientAccount account : accounts) {
             db.addClient(account);
         }

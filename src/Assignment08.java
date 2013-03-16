@@ -4,6 +4,7 @@ import com.scg.domain.TimeCard;
 import com.scg.net.AddClientCommand;
 import com.scg.net.AddConsultantCommand;
 import com.scg.net.AddTimeCardCommand;
+import com.scg.net.client.InvoiceClient;
 import com.scg.util.Name;
 
 import java.io.IOException;
@@ -52,37 +53,8 @@ public class Assignment08 {
         List<TimeCard> timeCards = new ArrayList<TimeCard>();
         ListFactory.populateLists(clients,  consultants, timeCards);
 
-        Name bob = new Name("Cowboy", "Bob", "The");
-        Name bill = new Name("Cowboy", "Bill", "The");
-        Name charlie = new Name("Cowboy", "Charlie", "The");
-        Consultant cowboyBob = new Consultant(bob);
-        Consultant cowboyBill = new Consultant(bill);
-        Consultant cowboyCharlie = new Consultant(charlie);
+        InvoiceClient invoiceClient = new InvoiceClient("localhost", DEFAULT_PORT, timeCards);
 
-        ClientAccount client1 = new ClientAccount("Bob's Rodeo", bob);
-        ClientAccount client2 = new ClientAccount("Bill's Rodeo", bill);
-        ClientAccount client3 = new ClientAccount("Chuck's Rodeo", charlie);
-
-        try {
-            socket = new Socket("localhost", DEFAULT_PORT);
-
-            ObjectOutputStream oStream = new ObjectOutputStream(socket.getOutputStream());
-
-            oStream.writeObject(new AddConsultantCommand(cowboyBob));
-            oStream.writeObject(new AddConsultantCommand(cowboyBill));
-            oStream.writeObject(new AddConsultantCommand(cowboyCharlie));
-
-            oStream.writeObject(new AddClientCommand(client1));
-            oStream.writeObject(new AddClientCommand(client2));
-            oStream.writeObject(new AddClientCommand(client3));
-
-            for (TimeCard tc : timeCards) {
-                oStream.writeObject(new AddTimeCardCommand(tc));
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        invoiceClient.run();
     }
 }

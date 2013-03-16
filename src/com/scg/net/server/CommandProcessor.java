@@ -2,10 +2,19 @@ package com.scg.net.server;
 
 import com.scg.domain.ClientAccount;
 import com.scg.domain.Consultant;
+import com.scg.domain.Invoice;
+import com.scg.domain.TimeCard;
 import com.scg.net.*;
+import com.scg.persistent.DbServer;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,6 +38,8 @@ public class CommandProcessor implements Runnable {
 
     private String outPutDirectoryName;
 
+    private static final Logger logger = Logger.getLogger(CommandProcessor.class.getName());
+
     public CommandProcessor(Socket connection,
                             List<ClientAccount> clientList,
                             List<Consultant> consultantList,
@@ -44,6 +55,7 @@ public class CommandProcessor implements Runnable {
      * @param outPutDirectoryName - the output directory name.
      */
     public void setOutPutDirectoryName(String outPutDirectoryName) {
+        logger.info("Setting output directory to: " + outPutDirectoryName);
         this.outPutDirectoryName = outPutDirectoryName;
     }
 
@@ -52,7 +64,9 @@ public class CommandProcessor implements Runnable {
      * @param command - the command to execute.
      */
     public void execute(AddTimeCardCommand command) {
-
+        logger.info("Adding time card");
+        TimeCard tc = command.getTarget();
+        logger.info(tc.toString());
     }
 
     /**
@@ -61,6 +75,7 @@ public class CommandProcessor implements Runnable {
      */
     public void execute(AddClientCommand command) {
         //log
+        logger.info("Adding client");
         clientList.add(command.getTarget());
     }
 
@@ -70,6 +85,7 @@ public class CommandProcessor implements Runnable {
      */
     public void execute(AddConsultantCommand command) {
         //log
+        logger.info("Adding consultant");
         consultantList.add(command.getTarget());
     }
 
@@ -79,6 +95,22 @@ public class CommandProcessor implements Runnable {
      */
     public void execute(CreateInvoicesCommand command) {
         //should be the same code from previous methods
+        logger.info("Creating invoice");
+        DbServer db = new DbServer("jdbc:mysql://localhost/scgDB", "student", "student");
+        for (ClientAccount client : clientList) {
+            try {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(command.getTarget());
+                Invoice invoice = db.getInvoice(client, cal.get(cal.MONTH), 2006);
+                String fName = String.format("%s-%s-invoice.txt", client.getName(),
+                        Calendar.getInstance().getDisplayName(cal.get(cal.MONTH), Calendar.LONG, null));
+                PrintStream writer = new PrintStream(new FileOutputStream(fName));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -86,7 +118,7 @@ public class CommandProcessor implements Runnable {
      * @param command - the command to execute.
      */
     public void execute(DisconnectCommand command) {
-
+        logger.info("Disconnecting");
     }
 
     /**
@@ -96,7 +128,8 @@ public class CommandProcessor implements Runnable {
      * @param command - the input ShutdownCommand.
      */
     public void execute(ShutdownCommand command) {
-
+        logger.info("Shutting down");
+        server.shutdown();
     }
 
     @Override
