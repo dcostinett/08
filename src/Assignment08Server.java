@@ -78,7 +78,6 @@ public class Assignment08Server {
             if (consultants.isEmpty()) {
                 ListFactory.populateConsultantList(consultants);
             }
-            System.out.println("Server ready on port " + DEFAULT_PORT + "...");
             InvoiceServer server = new InvoiceServer(DEFAULT_PORT, clients, consultants);
 
             server.run();

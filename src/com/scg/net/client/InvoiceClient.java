@@ -75,6 +75,8 @@ public class InvoiceClient {
             sendConsultants(oStream);
             sendTimeCards(oStream);
 
+            createInvoices(oStream, Calendar.MARCH, );
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

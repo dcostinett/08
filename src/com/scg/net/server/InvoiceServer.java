@@ -63,11 +63,11 @@ public class InvoiceServer implements Runnable {
     public void run() {
         ServerSocket servSock = null;
 
-        while (true) {
-            try {
-                servSock = new ServerSocket(port);
-
-                Socket sock = sock = servSock.accept(); // blocks
+        try {
+            servSock = new ServerSocket(port);
+            while (true) {
+                logger.info("Server ready on port " + port + "...");
+                Socket sock = servSock.accept(); // blocks
 
                 CommandProcessor proc = new CommandProcessor(sock, clientList, consultantList, this);
 
@@ -79,20 +79,19 @@ public class InvoiceServer implements Runnable {
                 Thread t = new Thread(proc);
                 t.start();
 */
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                if (servSock != null) {
-                    try {
-                        servSock.close();
-                    } catch (IOException ioex) {
-                        System.err.println("Error closing server socket. " + ioex);
-                    }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (servSock != null) {
+                try {
+                    servSock.close();
+                } catch (IOException ioex) {
+                    System.err.println("Error closing server socket. " + ioex);
                 }
             }
-
         }
     }
 

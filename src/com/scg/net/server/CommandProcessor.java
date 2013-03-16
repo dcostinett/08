@@ -7,9 +7,7 @@ import com.scg.domain.TimeCard;
 import com.scg.net.*;
 import com.scg.persistent.DbServer;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -36,7 +34,7 @@ public class CommandProcessor implements Runnable {
     private List<Consultant> consultantList;
     private InvoiceServer server;
 
-    private String outPutDirectoryName;
+    private String outPutDirectoryName = "";
 
     private static final Logger logger = Logger.getLogger(CommandProcessor.class.getName());
 
@@ -56,6 +54,11 @@ public class CommandProcessor implements Runnable {
      */
     public void setOutPutDirectoryName(String outPutDirectoryName) {
         logger.info("Setting output directory to: " + outPutDirectoryName);
+
+        if (!outPutDirectoryName.endsWith("/")) {
+            outPutDirectoryName += "/";
+        }
+
         this.outPutDirectoryName = outPutDirectoryName;
     }
 
@@ -64,6 +67,7 @@ public class CommandProcessor implements Runnable {
      * @param command - the command to execute.
      */
     public void execute(AddTimeCardCommand command) {
+
         logger.info("Adding time card");
         TimeCard tc = command.getTarget();
         logger.info(tc.toString());
@@ -74,8 +78,7 @@ public class CommandProcessor implements Runnable {
      * @param command - the command to execute.
      */
     public void execute(AddClientCommand command) {
-        //log
-        logger.info("Adding client");
+        logger.info("Adding client " + command.getTarget().getName());
         clientList.add(command.getTarget());
     }
 
@@ -84,8 +87,7 @@ public class CommandProcessor implements Runnable {
      * @param command - the command to execute.
      */
     public void execute(AddConsultantCommand command) {
-        //log
-        logger.info("Adding consultant");
+        logger.info("Adding consultant " + command.getTarget().getName());
         consultantList.add(command.getTarget());
     }
 
@@ -104,7 +106,11 @@ public class CommandProcessor implements Runnable {
                 Invoice invoice = db.getInvoice(client, cal.get(cal.MONTH), 2006);
                 String fName = String.format("%s-%s-invoice.txt", client.getName(),
                         Calendar.getInstance().getDisplayName(cal.get(cal.MONTH), Calendar.LONG, null));
-                PrintStream writer = new PrintStream(new FileOutputStream(fName));
+                if (!outPutDirectoryName.endsWith("/")) {
+                    outPutDirectoryName += "/";
+                }
+                FileOutputStream fout = new FileOutputStream(outPutDirectoryName + fName, true);
+                PrintStream writer = new PrintStream(fout);
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (FileNotFoundException e) {
@@ -119,6 +125,11 @@ public class CommandProcessor implements Runnable {
      */
     public void execute(DisconnectCommand command) {
         logger.info("Disconnecting");
+        try {
+            connection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -129,6 +140,12 @@ public class CommandProcessor implements Runnable {
      */
     public void execute(ShutdownCommand command) {
         logger.info("Shutting down");
+        try {
+            connection.shutdownInput();
+            connection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         server.shutdown();
     }
 
