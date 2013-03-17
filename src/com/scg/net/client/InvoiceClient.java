@@ -22,6 +22,12 @@ import java.util.List;
  * The client of the InvoiceServer.
  */
 public class InvoiceClient {
+    /** The start month for our test cases. */
+    private static final int INVOICE_MONTH = Calendar.MARCH;
+
+    /** The test year. */
+    private static final int INVOICE_YEAR = 2006;
+
     private String host;
     private int port;
     private List<TimeCard> timeCardList;
@@ -75,8 +81,12 @@ public class InvoiceClient {
             sendConsultants(oStream);
             sendTimeCards(oStream);
 
-            createInvoices(oStream, Calendar.MARCH, );
 
+            createInvoices(oStream, INVOICE_MONTH, INVOICE_YEAR);
+
+            sendDisconnect(oStream);
+
+            sendQuit();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -95,6 +105,13 @@ public class InvoiceClient {
                 }
             }
         }
+    }
+
+    /**
+     * Set the desired output directory
+     */
+    private void setOutputDirectory(String dir) {
+
     }
 
     /**
@@ -183,6 +200,13 @@ public class InvoiceClient {
      * Send the quit command to the server.
      */
     public void sendQuit() {
-
+        ShutdownCommand cmd = new ShutdownCommand();
+        try {
+            socket.set(new Socket(host, port));
+            ObjectOutputStream out = new ObjectOutputStream(socket.get().getOutputStream());
+            out.writeObject(cmd);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
