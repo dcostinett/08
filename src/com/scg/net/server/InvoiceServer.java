@@ -3,6 +3,7 @@ package com.scg.net.server;
 import com.scg.domain.ClientAccount;
 import com.scg.domain.Consultant;
 import com.scg.net.Command;
+import com.scg.net.ShutdownCommand;
 import com.scg.persistent.DbServer;
 
 import java.io.IOException;
@@ -42,6 +43,8 @@ public class InvoiceServer implements Runnable {
     private List<ClientAccount> clientList;
     private List<Consultant> consultantList;
 
+    private boolean isShutdownCommand = false;
+
     private static final Logger logger = Logger.getLogger(InvoiceServer.class.getName());
 
     /**
@@ -65,16 +68,23 @@ public class InvoiceServer implements Runnable {
 
         try {
             servSock = new ServerSocket(port);
-            while (true) {
-                logger.info("Server ready on port " + port + "...");
+            while (!isShutdownCommand) {
+                logger.info("Server ready on port " + port + " ...");
                 Socket sock = servSock.accept(); // blocks
 
                 CommandProcessor proc = new CommandProcessor(sock, clientList, consultantList, this);
 
                 ObjectInputStream iStream = new ObjectInputStream(sock.getInputStream());
                 Command cmd = (Command) iStream.readObject();
-                cmd.setReceiver(proc);
-                cmd.execute();
+                while (cmd != null) {
+                    cmd.setReceiver(proc);
+                    cmd.execute();
+                    if (!sock.isClosed()) {
+                        cmd = (Command) iStream.readObject();
+                    } else {
+                        cmd = null;
+                    }
+                }
 /*
                 Thread t = new Thread(proc);
                 t.start();
@@ -99,6 +109,6 @@ public class InvoiceServer implements Runnable {
      * Shutdown the server
      */
     void shutdown() {
-
+        isShutdownCommand = true;
     }
 }
