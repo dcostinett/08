@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
@@ -34,7 +35,7 @@ public class CommandProcessor implements Runnable {
     private List<Consultant> consultantList;
     private InvoiceServer server;
 
-    private String outPutDirectoryName = "";
+    private String outPutDirectoryName = ".";
 
     private static final Logger logger = Logger.getLogger(CommandProcessor.class.getName());
 
@@ -104,13 +105,15 @@ public class CommandProcessor implements Runnable {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(command.getTarget());
                 Invoice invoice = db.getInvoice(client, cal.get(cal.MONTH), 2006);
-                String fName = String.format("%s-%s-invoice.txt", client.getName(),
-                        Calendar.getInstance().getDisplayName(cal.get(cal.MONTH), Calendar.LONG, null));
+                String fName = String.format("%s-%s-invoice.txt", client.getName().replace(" ", "_"),
+                        Calendar.getInstance().getDisplayName(cal.get(cal.MONTH), Calendar.LONG, Locale.getDefault()));
                 if (!outPutDirectoryName.endsWith("/")) {
                     outPutDirectoryName += "/";
                 }
                 FileOutputStream fout = new FileOutputStream(outPutDirectoryName + fName, true);
                 PrintStream writer = new PrintStream(fout);
+                writer.print(invoice);
+                writer.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (FileNotFoundException e) {
@@ -126,6 +129,7 @@ public class CommandProcessor implements Runnable {
     public void execute(DisconnectCommand command) {
         logger.info("Disconnecting");
         try {
+            connection.shutdownInput();
             connection.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -141,7 +145,6 @@ public class CommandProcessor implements Runnable {
     public void execute(ShutdownCommand command) {
         logger.info("Shutting down");
         try {
-            connection.shutdownInput();
             connection.close();
         } catch (IOException e) {
             e.printStackTrace();
