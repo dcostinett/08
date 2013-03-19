@@ -81,12 +81,9 @@ public class InvoiceClient {
             sendConsultants(oStream);
             sendTimeCards(oStream);
 
-
             createInvoices(oStream, INVOICE_MONTH, INVOICE_YEAR);
 
             sendDisconnect(oStream);
-
-            sendQuit();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -170,6 +167,7 @@ public class InvoiceClient {
         DisconnectCommand cmd = new DisconnectCommand();
         try {
             out.writeObject(cmd);
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -191,6 +189,7 @@ public class InvoiceClient {
         CreateInvoicesCommand cmd = new CreateInvoicesCommand(cal.getTime());
         try {
             out.writeObject(cmd);
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -205,6 +204,8 @@ public class InvoiceClient {
             socket.set(new Socket(host, port));
             ObjectOutputStream out = new ObjectOutputStream(socket.get().getOutputStream());
             out.writeObject(cmd);
+            out.flush();
+            socket.get().close();
         } catch (IOException e) {
             e.printStackTrace();
         }

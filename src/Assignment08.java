@@ -54,7 +54,9 @@ public class Assignment08 {
         ListFactory.populateLists(clients,  consultants, timeCards);
 
         InvoiceClient invoiceClient = new InvoiceClient("localhost", DEFAULT_PORT, timeCards);
-
         invoiceClient.run();
+
+        InvoiceClient shutdownClient = new InvoiceClient("localhost", DEFAULT_PORT, timeCards);
+        shutdownClient.sendQuit();
     }
 }

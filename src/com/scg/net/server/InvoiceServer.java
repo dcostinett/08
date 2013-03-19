@@ -43,6 +43,8 @@ public class InvoiceServer implements Runnable {
     private List<ClientAccount> clientList;
     private List<Consultant> consultantList;
 
+    private ServerSocket servSock = null;
+
     private boolean isShutdownCommand = false;
 
     private static final Logger logger = Logger.getLogger(InvoiceServer.class.getName());
@@ -52,9 +54,8 @@ public class InvoiceServer implements Runnable {
      * @param port - The port for this server to listen on
      * @param clientList - the initial list of clients
      * @param consultantList - the initial list of consultants
-     * @throws IOException - in the event of any IO errors
      */
-    public InvoiceServer(int port, List<ClientAccount> clientList, List<Consultant> consultantList) throws IOException {
+    public InvoiceServer(int port, List<ClientAccount> clientList, List<Consultant> consultantList) {
         this.port = port;
         this.clientList = clientList;
         this.consultantList = consultantList;
@@ -64,8 +65,6 @@ public class InvoiceServer implements Runnable {
      * Run this server, establishing connections, receiving commands, and sending them to the CommandProcesser.
      */
     public void run() {
-        ServerSocket servSock = null;
-
         try {
             servSock = new ServerSocket(port);
             while (!isShutdownCommand) {
@@ -75,6 +74,8 @@ public class InvoiceServer implements Runnable {
                 CommandProcessor proc = new CommandProcessor(sock, clientList, consultantList, this);
 
                 ObjectInputStream iStream = new ObjectInputStream(sock.getInputStream());
+
+                //check for a valid command object before casting
                 Command cmd = (Command) iStream.readObject();
                 while (cmd != null) {
                     cmd.setReceiver(proc);
@@ -110,5 +111,14 @@ public class InvoiceServer implements Runnable {
      */
     void shutdown() {
         isShutdownCommand = true;
+        if (servSock != null) {
+            try {
+                if (!servSock.isClosed()) {
+                    servSock.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

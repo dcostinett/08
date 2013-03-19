@@ -17,8 +17,6 @@ import java.util.GregorianCalendar;
 public class CreateInvoicesCommand extends Command<Date> {
     private static final long serialVersionUID = -2115265433453491367L;
 
-    Date target;
-
     /**
      * Construct a CreateInvoicesCommand with a target month, which should be obtained by getting the desired month
      * constant from Calendar.
@@ -26,9 +24,6 @@ public class CreateInvoicesCommand extends Command<Date> {
      */
     public CreateInvoicesCommand(Date target) {
         super(target);
-        this.target = target;
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(target);
     }
 
     @Override

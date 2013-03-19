@@ -10,6 +10,7 @@ import com.scg.persistent.DbServer;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +35,8 @@ public class CommandProcessor implements Runnable {
     private List<ClientAccount> clientList;
     private List<Consultant> consultantList;
     private InvoiceServer server;
+
+    private List<TimeCard> timeCardList = new ArrayList<TimeCard>();
 
     private String outPutDirectoryName = ".";
 
@@ -71,6 +74,13 @@ public class CommandProcessor implements Runnable {
 
         logger.info("Adding time card");
         TimeCard tc = command.getTarget();
+        DbServer db = new DbServer("jdbc:mysql://localhost/scgDB", "student", "student");
+        try {
+            db.addTimeCard(tc);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        timeCardList.add(tc);
         //logger.info(tc.toString());
     }
 
@@ -107,6 +117,10 @@ public class CommandProcessor implements Runnable {
                 Invoice invoice = db.getInvoice(client, cal.get(cal.MONTH), 2006);
                 String fName = String.format("%s-%s-invoice.txt", client.getName().replace(" ", "_"),
                         Calendar.getInstance().getDisplayName(cal.get(cal.MONTH), Calendar.LONG, Locale.getDefault()));
+                final File outputDir = new File(outPutDirectoryName);
+                if (!outputDir.exists()) {
+                    outputDir.mkdirs();
+                }
                 if (!outPutDirectoryName.endsWith("/")) {
                     outPutDirectoryName += "/";
                 }
@@ -131,7 +145,7 @@ public class CommandProcessor implements Runnable {
         try {
             connection.shutdownInput();
             connection.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
@@ -146,10 +160,11 @@ public class CommandProcessor implements Runnable {
         logger.info("Shutting down");
         try {
             connection.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
+        } finally {
+            server.shutdown();
         }
-        server.shutdown();
     }
 
     @Override

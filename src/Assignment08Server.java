@@ -47,6 +47,20 @@ import java.util.List;
         This should be performed on a separate connection.
  */
 public class Assignment08Server {
+    /**
+     * connection string to the SQL DB
+     */
+    private static final String URL = "jdbc:mysql://localhost/scgDB";
+
+    /**
+     * user name for DB credentials
+     */
+    private static final String USERNAME = "student";
+
+    /**
+     * DB credentials password
+     */
+    private static final String PASSWORD = "student";
 
     /** The port for the server to listen on.*/
     public static final int DEFAULT_PORT = 10888;
@@ -60,30 +74,26 @@ public class Assignment08Server {
 
         InitDb.main(new String[] {});
 
+        List<ClientAccount> clients = new ArrayList<ClientAccount>(); //db.getClients();
+        List<Consultant> consultants = new ArrayList<Consultant>();   //db.getConsultants();
+
         try {
-            List<ClientAccount> clients = new ArrayList<ClientAccount>(); //db.getClients();
-            List<Consultant> consultants = new ArrayList<Consultant>();   //db.getConsultants();
-
-            try {
-                DbServer db = new DbServer("jdbc:mysql://localhost/scgDB", "student", "student");
-                clients = db.getClients();
-                consultants = db.getConsultants();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            if (clients.isEmpty()) {
-                ListFactory.populateClientList(clients);
-            }
-            if (consultants.isEmpty()) {
-                ListFactory.populateConsultantList(consultants);
-            }
-            InvoiceServer server = new InvoiceServer(DEFAULT_PORT, clients, consultants);
-
-            server.run();
-        } catch (IOException ex) {
-            System.err.println("Server error: " + ex);
+            DbServer db = new DbServer(URL, USERNAME, PASSWORD);
+            clients = db.getClients();
+            consultants = db.getConsultants();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        if (clients.isEmpty()) {
+            ListFactory.populateClientList(clients);
+        }
+        if (consultants.isEmpty()) {
+            ListFactory.populateConsultantList(consultants);
+        }
+        InvoiceServer server = new InvoiceServer(DEFAULT_PORT, clients, consultants);
+
+        server.run();
 
     }
 }

@@ -39,7 +39,7 @@ public class InitDb {
         }
 
         for (TimeCard tc : timeCards) {
-            db.addTimeCard(tc);
+            //db.addTimeCard(tc);
         }
     }
 }
