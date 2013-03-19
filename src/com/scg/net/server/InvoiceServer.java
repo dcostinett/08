@@ -73,6 +73,9 @@ public class InvoiceServer implements Runnable {
 
                 CommandProcessor proc = new CommandProcessor(sock, clientList, consultantList, this);
 
+                if (sock.getInputStream().available() <= 0) {
+                    continue;
+                }
                 ObjectInputStream iStream = new ObjectInputStream(sock.getInputStream());
 
                 //check for a valid command object before casting
