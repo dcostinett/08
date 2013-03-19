@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 public abstract class Command<T> implements Serializable {
     T target;
-    private CommandProcessor receiver;
+    private transient CommandProcessor receiver;
 
     /**
      * Construct an AbstractCommand with a receiver; called from subclasses.
