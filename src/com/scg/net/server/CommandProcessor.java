@@ -71,7 +71,7 @@ public class CommandProcessor implements Runnable {
 
         logger.info("Adding time card");
         TimeCard tc = command.getTarget();
-        logger.info(tc.toString());
+        //logger.info(tc.toString());
     }
 
     /**

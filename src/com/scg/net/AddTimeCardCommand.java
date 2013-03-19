@@ -12,7 +12,6 @@ import com.scg.domain.TimeCard;
  */
 public final class AddTimeCardCommand extends Command<TimeCard> {
     private static final long serialVersionUID = -1096168261168597249L;
-    TimeCard target;
 
     /**
      * Construct an AddTimeCardCommand with a target.
@@ -20,7 +19,6 @@ public final class AddTimeCardCommand extends Command<TimeCard> {
      */
     public AddTimeCardCommand(TimeCard target) {
         super(target);
-        target = target;
     }
 
     @Override

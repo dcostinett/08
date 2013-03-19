@@ -10,7 +10,6 @@ import com.scg.domain.ClientAccount;
  * The command to add a Client to a list maintained by the server.
  */
 public final class AddClientCommand extends Command<ClientAccount> {
-    ClientAccount target;
 
     private static final long serialVersionUID = -698814103304610481L;
 
@@ -20,7 +19,6 @@ public final class AddClientCommand extends Command<ClientAccount> {
      */
     public AddClientCommand(ClientAccount target) {
         super(target);
-        target = target;
     }
 
     /**
