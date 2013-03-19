@@ -4,7 +4,9 @@ import com.scg.domain.ClientAccount;
 import com.scg.domain.Consultant;
 import com.scg.domain.TimeCard;
 import com.scg.net.*;
+import com.scg.util.Address;
 import com.scg.util.Name;
+import com.scg.util.StateCode;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -69,9 +71,17 @@ public class InvoiceClient {
         consultants.add(new Consultant(bill));
         consultants.add(new Consultant(charlie));
 
-        clients.add(new ClientAccount("Bob's Rodeo", bob));
-        clients.add(new ClientAccount("Bill's Rodeo", bill));
-        clients.add(new ClientAccount("Chuck's Rodeo", charlie));
+        ClientAccount c1 = new ClientAccount("Bob's Rodeo", bob);
+        c1.setAddress(new Address("123 Main St", "Smallville", StateCode.WA, "98102"));
+        clients.add(c1);
+
+        ClientAccount c2 = new ClientAccount("Bill's Rodeo", bob);
+        c1.setAddress(new Address("345 Main St", "Smallville", StateCode.WA, "98102"));
+        clients.add(new ClientAccount(bill.toString(), bill));
+
+        ClientAccount c3 = new ClientAccount("Chuck's Rodeo", bob);
+        c1.setAddress(new Address("678 Main St", "Smallville", StateCode.WA, "98102"));
+        clients.add(new ClientAccount(charlie.toString(), charlie));
 
         ObjectOutputStream oStream = null;
         try {
